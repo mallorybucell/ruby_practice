@@ -91,6 +91,17 @@ class Puzzle
 
   end
 
+  def find_pair_with_unique_sum(set_of_pairs)
+    sums_of_pairs = self.get_all_sums(set_of_pairs)
+    groups_of_sums = sums_of_pairs.group_by { |key, value | value }
+    unique_sums = groups_of_sums.select { |k,v| v.length == 1 }
+    indexes_of_unique_sums = []
+    unique_sums.each_value {|v| indexes_of_unique_sums << v[0][0].to_i }
+    solutions = indexes_of_unique_sums.map { |index| set_of_pairs[index]}
+    solutions
+
+  end
+
 end 
 
 #start script
@@ -119,4 +130,8 @@ puts "Remaining pairs without unique sums: #{pairs_meeting_second_sum_constraint
 pairs_meeting_second_product_constraint = sum_product.find_pair_with_unique_product(pairs_meeting_second_sum_constraint)
 puts "Remaining pairs with unique products: #{pairs_meeting_second_product_constraint.count}"
 
+#5th constraint: Mr. S now knows, so of remaining pairs that make unique products, only one adds to possible sum
 
+pairs_meeting_third_sum_constraint = sum_product.find_pair_with_unique_sum(pairs_meeting_second_product_constraint)
+
+puts "result: #{pairs_meeting_third_sum_constraint}"
