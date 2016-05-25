@@ -28,6 +28,7 @@ class Puzzle
 
 
   def remove_double_prime_pairs(set_of_pairs)
+    # Return set of all possible number pairs where no more than one number in each pair is prime
     no_double_primes = set_of_pairs.map { |pair| pair if !pair[0].prime? || !pair[1].prime? }
     no_double_primes.compact!
     no_double_primes
@@ -60,12 +61,16 @@ class Puzzle
   end
 
   def remove_pairs_with_unique_sums(set_of_pairs)
-
+    # get set of sums of valid pairs, and count how many times each sum appears
     sums_of_pairs = self.get_all_sums(set_of_pairs)
     groups_of_sums = sums_of_pairs.group_by { | key, value | value }
+
+    # collect all unique sums, and grab indexes of corresponding pair in the valid pairs set
     unique_sums = groups_of_sums.select {|k,v| v.length == 1}
     indexes_of_unique_sum_pairs =  []
     unique_sums.each_value {|v| indexes_of_unique_sum_pairs << v[0][0].to_i}
+
+    # remove pairs that produce unique sums from valid pair set and return reduced pair set.
     indexes_of_unique_sum_pairs.each do |index|
       set_of_pairs[index] = nil
     end
@@ -81,22 +86,39 @@ class Puzzle
   end
 
   def find_pair_with_unique_product(set_of_pairs)
+
+    # get array of products of valid pairs that are passed in
     products_of_pairs = self.get_all_products(set_of_pairs)
+
+    # count how many times each product appears
     groups_of_products = products_of_pairs.group_by { |key, value | value }
+
+    # identify and separate uniquely occuring products and 
+    # grab index of pairs that produce them in valid pairs array
     unique_products = groups_of_products.select { |k,v| v.length == 1 }
     indexes_of_unique_products = []
     unique_products.each_value {|v| indexes_of_unique_products << v[0][0].to_i }
+
+    # use index to map pair(s) producing unique product to solutions array
+    # return solutions array
     solutions = indexes_of_unique_products.map { |index| set_of_pairs[index]}
     solutions
 
   end
 
   def find_pair_with_unique_sum(set_of_pairs)
+    # get array containing sums of all currently valid pairs (which are passed in)
     sums_of_pairs = self.get_all_sums(set_of_pairs)
+
+    # find unique sum by counting how many times each sum occurs
     groups_of_sums = sums_of_pairs.group_by { |key, value | value }
     unique_sums = groups_of_sums.select { |k,v| v.length == 1 }
+
+    # Get index of pair(s) that produced unique sum(s) from passed-in valid pairs array
     indexes_of_unique_sums = []
     unique_sums.each_value {|v| indexes_of_unique_sums << v[0][0].to_i }
+
+    # Map index to actual pair(s) and save this in a solutions array
     solutions = indexes_of_unique_sums.map { |index| set_of_pairs[index]}
     solutions
 
